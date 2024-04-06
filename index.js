@@ -3,7 +3,11 @@ const path = require('path')
 const ejs = require('ejs')
 const mongoose = require('mongoose')
 mongoose.connect('mongodb+srv://db1:123@cluster0.ajbeedx.mongodb.net/')
+const BlogPost = require('./models/BlogPost.js')
 const app = new express()
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended:true}))
 //Đăng ký thư mục public
 app.use(express.static('public'))
 // thiết lập view engine là EJS
@@ -21,6 +25,14 @@ app.get('/contact', (req,res) =>{
 })
 app.get('/post',(req, res) =>{
     res.render('post')
+})
+app.get('/posts/new', (req, res) => {
+    res.render('create')
+    })
+app.post('/posts/store', (req, res) => {
+    BlogPost.create(req.body, (error, blogpost) =>{
+        res.redirect('/')
+    })
 })
 //khởi động server 
 app.listen(4000)
