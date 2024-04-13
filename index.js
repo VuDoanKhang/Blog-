@@ -5,6 +5,11 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 
 const app = new express()
+const newUserController = require('./controllers/newUser')
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json())
 
 mongoose.connect('mongodb://localhost:27017/')
     .then(() => {
@@ -17,6 +22,17 @@ mongoose.connect('mongodb://localhost:27017/')
 //         body: 'Nếu bạn đam mê với Javascript và muốn khám phá cách xây dựng ứng dụng với Node.js thì đây là tài liệu giành cho bạn'
 //     });
 // })
+
+app.get('/auth/register', newUserController)
+
+const storeUserController = require('./controllers/storeUser')
+app.post('/users/register', storeUserController)
+
+const loginController = require('./controllers/login')
+app.get('/auth/login', loginController);
+
+const loginUserController = require('./controllers/loginUser')
+app.post('/users/login', loginUserController)
 
 //Tạo danh sách bài đăng
 app.get('/posts/new', async (req, res) => {
@@ -46,13 +62,8 @@ app.get('/post/:id', (req, res) => {
 })
 
 
-
-
 const BlogPost = require('./models/BlogPost.js')
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.json())
 
 //Đăng ký thư mục public
 app.use(express.static('public'))
