@@ -69,7 +69,7 @@
                                 </div>
                                 <hr>
                                 <% } %>
-                                    <form action="/posts/store" method="POST" data-sb-form-api-token="API_TOKEN">
+                                    <form action="/posts/store" method="POST" data-sb-form-api-token="API_TOKEN" enctype="multipart/form-data" >
                                         <div class="form-floating">
                                             <input class="form-control" id="title" type="text" name="title"
                                                 placeholder="Enter title..." data-sb-validations="required" />
@@ -100,6 +100,13 @@
                                                     href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
                                             </div>
                                         </div>
+                                        <div class="control-group">
+                                                <div class="form-group floating-label-form-group controls">
+                                                    <label>Image</label>
+                                                    <input type="file" class="form-control" id="image" name="image">
+                                                </div>
+                                        </div>
+                                        <br>
                                         <!-- Submit error message-->
                                         <!---->
                                         <!-- This is what your users will see when there is-->
