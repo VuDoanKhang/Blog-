@@ -10,10 +10,6 @@ app.use(express.json());
 //Đăng ký thư mục public
 app.use(express.static("public"));
 
-//Khai báo express-fileupload
-const fileupload = require("express-fileupload");
-app.use(fileupload());
-
 // thiết lập view engine là EJS
 app.set("view engine", "ejs");
 
@@ -34,7 +30,7 @@ app.post("/users/login", loginUserController);
 
 // ---------------------------------------- check-----------------------
 const BlogPost = require("./models/BlogPost");
-//Tạo danh sách bài đăng
+// Tạo danh sách bài đăng
 app.get("/posts/new", async (req, res) => {
   try {
     const blogposts = await BlogPost.find({}); // Lấy danh sách các bài đăng
@@ -44,7 +40,7 @@ app.get("/posts/new", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-//-------------------------------------------x---------------------------------
+// //-------------------------------------------x---------------------------------
 
 const getPostController = require("./controllers/getPost");
 //Hiển thị chi tiết bài đăng
@@ -56,8 +52,8 @@ app.get("/", homeController);
 //-----------------------------------
 const newPostController = require("./controllers/newPost");
 app.get("/posts/new", newPostController);
-const storePostController = require("./controllers/storePost");
-app.post("/posts/store", storePostController);
+
+// const storePostController = require("./controllers/storePost");
 
 app.get("/about", (req, res) => {
   res.render("about");
@@ -72,6 +68,23 @@ app.get("/samplepost", (req, res) => {
 });
 
 //-------------------------------------\
+const path = require("path");
+//Khai báo express-fileupload
+const fileupload = require("express-fileupload");
+app.use(fileupload());
+const createBlogPost = async (req, res) => {
+  try {
+    let image = req.files.image;
+    await image.mv(path.resolve(__dirname, "./public/upload", image.name));
+    await BlogPost.create(req.body);
+    res.redirect("/");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+app.post("/posts/store", createBlogPost);
+module.exports = createBlogPost;
 
 //-----------------------------------
 app.listen(4000);
