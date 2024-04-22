@@ -1,8 +1,11 @@
 const express = require("express");
 const ejs = require("ejs");
 const bodyParser = require("body-parser");
-
+const path = require("path");
 const app = new express();
+//Khai báo express-fileupload
+const fileupload = require("express-fileupload");
+app.use(fileupload());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -53,7 +56,8 @@ app.get("/", homeController);
 const newPostController = require("./controllers/newPost");
 app.get("/posts/new", newPostController);
 
-// const storePostController = require("./controllers/storePost");
+const storePostController = require("./controllers/storePost");
+app.post("/posts/store", storePostController);
 
 app.get("/about", (req, res) => {
   res.render("about");
@@ -68,23 +72,6 @@ app.get("/samplepost", (req, res) => {
 });
 
 //-------------------------------------\
-const path = require("path");
-//Khai báo express-fileupload
-const fileupload = require("express-fileupload");
-app.use(fileupload());
-const createBlogPost = async (req, res) => {
-  try {
-    let image = req.files.image;
-    await image.mv(path.resolve(__dirname, "./public/upload", image.name));
-    await BlogPost.create(req.body);
-    res.redirect("/");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-};
-app.post("/posts/store", createBlogPost);
-module.exports = createBlogPost;
 
 //-----------------------------------
 app.listen(4000);
