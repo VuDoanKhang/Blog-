@@ -5,8 +5,14 @@ const path = require("path");
 const app = new express();
 //Khai báo express-fileupload
 const fileupload = require("express-fileupload");
-app.use(fileupload());
+const expressSession = require('express-session');
+const authMiddleware = require('./middleware/authMiddleware')
 
+
+app.use(expressSession({
+  secret: 'keyboard cat'
+}))
+app.use(fileupload());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -54,10 +60,10 @@ app.get("/", homeController);
 
 //-----------------------------------
 const newPostController = require("./controllers/newPost");
-app.get("/posts/new", newPostController);
+app.get('/posts/new', authMiddleware, newPostController)
 
 const storePostController = require("./controllers/storePost");
-app.post("/posts/store", storePostController);
+app.post("/posts/store", authMiddleware, storePostController);
 
 app.get("/about", (req, res) => {
   res.render("about");
